@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import "./DichVu.css"; // Đảm bảo bạn đã tạo file CSS cho trang này
+import { useLocation } from "react-router-dom";
+import "./DichVu.css";
 
 function DichVu() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filteredServices, setFilteredServices] = useState([]);
 
-  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Lấy dữ liệu dịch vụ từ API
@@ -27,10 +28,19 @@ function DichVu() {
       });
   }, []); // Chỉ gọi API một lần khi component mount
 
-  const handleDetailClick = (id) => {
-    // Điều hướng đến trang chi tiết dịch vụ
-    navigate(`/dich-vu/${id}`);
-  };
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const keyword = queryParams.get("keyword");
+    if (keyword) {
+      // Lọc dịch vụ theo tên nếu có keyword
+      const filtered = services.filter((service) =>
+        service.name.toLowerCase().includes(keyword.toLowerCase())
+      );
+      setFilteredServices(filtered);
+    } else {
+      setFilteredServices(services); // Nếu không có tìm kiếm, hiển thị tất cả dịch vụ
+    }
+  }, [location.search, services]);
 
   return (
     <div className="service-page">
@@ -40,8 +50,8 @@ function DichVu() {
       {error && <p className="error-message">{error}</p>}
 
       <div className="service-list">
-        {services.length > 0 ? (
-          services.map((service) => (
+        {filteredServices.length > 0 ? (
+          filteredServices.map((service) => (
             <div className="service-card" key={service._id}>
               <img
                 src={service.image || "/default-service.jpg"}
@@ -50,16 +60,10 @@ function DichVu() {
               />
               <h3>{service.name}</h3>
               <p>{service.description}</p>
-              <button
-                className="service-btn"
-                onClick={() => handleDetailClick(service._id)}
-              >
-                Tìm Hiểu Thêm
-              </button>
             </div>
           ))
         ) : (
-          <p>Không có dịch vụ nào.</p>
+          <p>Không có dịch vụ nào phù hợp với tìm kiếm của bạn.</p>
         )}
       </div>
     </div>

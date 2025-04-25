@@ -11,6 +11,7 @@ function Navbar() {
   const handleSearch = (e) => {
     e.preventDefault();
     if (keyword.trim()) {
+      // Điều hướng tới trang dịch vụ và gửi tham số tìm kiếm theo tên dịch vụ
       navigate(`/dich-vu?keyword=${encodeURIComponent(keyword.trim())}`);
       setKeyword(""); // Reset ô tìm kiếm
     }
@@ -33,7 +34,7 @@ function Navbar() {
       <form className="navbar-search" onSubmit={handleSearch}>
         <input
           type="text"
-          placeholder="Tìm kiếm..."
+          placeholder="Tìm kiếm dịch vụ..."
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
