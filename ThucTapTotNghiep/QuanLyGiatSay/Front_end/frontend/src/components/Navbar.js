@@ -26,7 +26,6 @@ function Navbar() {
       <ul className="nav-links">
         <li><Link to="/">Trang Chủ</Link></li>
         <li><Link to="/dich-vu">Dịch Vụ</Link></li>
-        <li><Link to="/dat-dich-vu">Đặt Dịch vụ</Link></li>
         <li><Link to="/bang-gia">Bảng Giá</Link></li>
         <li><Link to="/lien-he">Liên Hệ</Link></li>
       </ul>

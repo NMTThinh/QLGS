@@ -21,14 +21,6 @@ function LienHe() {
             <p>📞 Điện thoại: 0123 456 789</p>
             <p>📧 Email: giatsay24h@gmail.com</p>
           </div>
-
-          <form className="contact-form">
-            <h3>Gửi tin nhắn</h3>
-            <input type="text" placeholder="Họ và tên" required />
-            <input type="email" placeholder="Email" required />
-            <textarea placeholder="Nội dung..." rows="5" required />
-            <button type="submit">Gửi</button>
-          </form>
         </div>
       </div>
     </div>

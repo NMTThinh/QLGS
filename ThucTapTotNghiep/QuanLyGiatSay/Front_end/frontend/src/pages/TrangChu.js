@@ -42,12 +42,6 @@ function TrangChu() {
           <button className="cta-button" onClick={handleClick}>
             Đặt dịch vụ ngay
           </button>
-           {/* Thêm nút đăng nhập admin ở đây */}
-           <div className="admin-login-button-container">
-            <Link to="/admins/login" className="admin-login-button">
-              Đăng nhập Admin
-            </Link>
-          </div>
         </div>
       </div>
 

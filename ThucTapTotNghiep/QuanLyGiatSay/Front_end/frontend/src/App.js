@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import TrangChu from "./pages/TrangChu";
 import DichVu from "./pages/DichVu";
 import ChiTietDichVu from "./pages/ChiTietDichVu";
-import DatDichVu from "./pages/DatDichVu";
 import LienHe from "./pages/LienHe";
 import BangGia from "./pages/BangGia";
 import Navbar from "./components/Navbar";
@@ -32,7 +31,6 @@ function AppContent() {
         <Route path="/" element={<TrangChu />} />
         <Route path="/dich-vu" element={<DichVu />} />
         <Route path="/dich-vu/:id" element={<ChiTietDichVu />} />
-        <Route path="/dat-dich-vu" element={<DatDichVu />} />
         <Route path="/lien-he" element={<LienHe />} />
         <Route path="/bang-gia" element={<BangGia />} />
         <Route path="/admins/login" element={<AdminLoginPage />} />
