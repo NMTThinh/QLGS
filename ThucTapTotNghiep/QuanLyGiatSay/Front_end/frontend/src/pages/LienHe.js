@@ -1,6 +1,6 @@
 import React from "react";
 import "./LienHe.css";
-import contactImage from "../assets/lienhe.avif"; // thêm ảnh minh họa
+import contactImage from "../assets/lienhe.avif"; 
 
 function LienHe() {
   return (
@@ -21,6 +21,7 @@ function LienHe() {
             <p>📞 Điện thoại: 0123 456 789</p>
             <p>📧 Email: giatsay24h@gmail.com</p>
           </div>
+
         </div>
       </div>
     </div>

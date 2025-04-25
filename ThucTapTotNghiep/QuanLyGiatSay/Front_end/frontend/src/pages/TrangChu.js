@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./TrangChu.css";
 
 // Banner + Process images
@@ -22,8 +22,9 @@ import gioithieuImg from "../assets/gioithieu.jpg";
 function TrangChu() {
   const navigate = useNavigate();
 
+  // Hàm handleClick để điều hướng
   const handleClick = () => {
-    navigate("/dich-vu");
+    navigate("/dich-vu"); // Điều hướng tới trang dịch vụ
   };
 
   return (
@@ -39,34 +40,34 @@ function TrangChu() {
           <p className="description">
             Giặt Ủi 247 mang đến dịch vụ giặt sấy và vệ sinh quần áo chuyên nghiệp. Dễ dàng đặt tại tiệm gần nhất hoặc online – tiện lợi, tiết kiệm thời gian!
           </p>
-          <button className="cta-button" onClick={handleClick}>
-            Đặt dịch vụ ngay
+          {/* Đảm bảo rằng handleClick đã được gắn vào sự kiện onClick */}
+          <button onClick={handleClick} className="service-btn">
+            Xem Dịch Vụ
           </button>
         </div>
       </div>
 
       {/* Giới thiệu về chúng tôi */}
-<section className="about-us">
-  <h2>
-    Giới Thiệu Về <span className="highlight">Giặt Ủi 247</span>
-  </h2>
-  <div className="about-content">
-    <div className="about-text">
-      <p>
-        Giặt Ủi 24h là hệ thống giặt sấy chuyên nghiệp, hiện đại và uy tín hàng đầu tại Việt Nam. 
-        Với sứ mệnh mang lại sự tiện lợi và chất lượng cho từng bộ trang phục, chúng tôi luôn không ngừng cải tiến dịch vụ và đầu tư vào công nghệ mới.
-      </p>
-      <p>
-        Chúng tôi cung cấp nhiều hình thức giặt đa dạng: từ giặt hấp, giặt khô, đến vệ sinh các loại đồ chuyên biệt như áo dạ, đồ da, chăn ga gối... 
-        Mạng lưới tiệm phủ khắp các khu vực, cùng dịch vụ giao nhận tận nơi nhanh chóng giúp khách hàng tiết kiệm thời gian và an tâm tuyệt đối.
-      </p>
-    </div>
-    <div className="about-image">
-      <img src={gioithieuImg} alt="Giới thiệu Giặt Ủi 24h" />
-    </div>
-  </div>
-</section>
-
+      <section className="about-us">
+        <h2>
+          Giới Thiệu Về <span className="highlight">Giặt Ủi 247</span>
+        </h2>
+        <div className="about-content">
+          <div className="about-text">
+            <p>
+              Giặt Ủi 24h là hệ thống giặt sấy chuyên nghiệp, hiện đại và uy tín hàng đầu tại Việt Nam. 
+              Với sứ mệnh mang lại sự tiện lợi và chất lượng cho từng bộ trang phục, chúng tôi luôn không ngừng cải tiến dịch vụ và đầu tư vào công nghệ mới.
+            </p>
+            <p>
+              Chúng tôi cung cấp nhiều hình thức giặt đa dạng: từ giặt hấp, giặt khô, đến vệ sinh các loại đồ chuyên biệt như áo dạ, đồ da, chăn ga gối... 
+              Mạng lưới tiệm phủ khắp các khu vực, cùng dịch vụ giao nhận tận nơi nhanh chóng giúp khách hàng tiết kiệm thời gian và an tâm tuyệt đối.
+            </p>
+          </div>
+          <div className="about-image">
+            <img src={gioithieuImg} alt="Giới thiệu Giặt Ủi 24h" />
+          </div>
+        </div>
+      </section>
 
       {/* Tại sao chọn chúng tôi */}
       <section className="why-choose-us">
@@ -127,8 +128,6 @@ function TrangChu() {
         </div>
       </section>
 
-     
-
       {/* Quy trình */}
       <section className="process-section">
         <h2>
@@ -160,9 +159,6 @@ function TrangChu() {
           </div>
         </div>
       </section>
-
-
-      
     </div>
   );
 }

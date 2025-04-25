@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./ChiTietDichVu.css";
 
 function ChiTietDichVu() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -41,14 +40,6 @@ function ChiTietDichVu() {
       <div className="detail-content">
         <h2 className="detail-title">{service.name}</h2>
         <p className="detail-description">{service.description}</p>
-
-
-        <button
-          className="detail-button"
-          onClick={() => navigate(`/dat-dich-vu?serviceId=${service._id}`)}
-        >
-          Đặt Ngay
-        </button>
       </div>
     </div>
   );
