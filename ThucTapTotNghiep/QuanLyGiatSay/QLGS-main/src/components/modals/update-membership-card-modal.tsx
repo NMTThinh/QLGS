@@ -37,12 +37,12 @@ export function UpdateMembershipCardModal({
   cardId,
 }: UpdateMembershipCardModalProps) {
   const [formData, setFormData] = useState<UpdateMemberShipCardRequestType>({
-    id_khachhang: "",
-    so_the: "",
-    ngay_cap: undefined,
-    ngay_het_han: undefined,
-    diem_tich_luy: undefined,
-    trangthai: undefined,
+    id_customer: "",
+    card_number: "",
+    issue_date: undefined,
+    expiry_date: undefined,
+    points: undefined,
+    status: undefined,
   });
 
   const [customers, setCustomers] = useState<CustomerResponse[]>([]);
@@ -68,8 +68,8 @@ export function UpdateMembershipCardModal({
       const data = await getAllCustomers();
       setCustomers(data);
     } catch (error) {
-      console.error("Error fetching customers:", error);
-      setError("Failed to load customers. Please try again.");
+      console.error("Lỗi khi tải danh sách khách hàng:", error);
+      setError("Không thể tải danh sách khách hàng. Vui lòng thử lại.");
     }
   };
 
@@ -80,17 +80,17 @@ export function UpdateMembershipCardModal({
     try {
       const cardData = await getMembershipCardById(cardId);
       setFormData({
-        id_khachhang: cardData.id_khachhang,
-        so_the: cardData.so_the,
-        ngay_cap: new Date(cardData.ngay_cap),
-        ngay_het_han: new Date(cardData.ngay_het_han),
-        diem_tich_luy: cardData.diem_tich_luy,
-        trangthai: cardData.trangthai,
+        id_customer: cardData.id_customer,
+        card_number: cardData.card_number,
+        issue_date: new Date(cardData.issue_date),
+        expiry_date: new Date(cardData.expiry_date),
+        points: cardData.points,
+        status: cardData.status,
       });
       setFetchLoading(false);
     } catch (error) {
-      console.error("Error fetching membership card:", error);
-      setError("Failed to load membership card data. Please try again.");
+      console.error("Lỗi khi tải thẻ thành viên:", error);
+      setError("Không thể tải dữ liệu thẻ thành viên. Vui lòng thử lại.");
       setFetchLoading(false);
     }
   };
@@ -101,12 +101,12 @@ export function UpdateMembershipCardModal({
     const { name, value } = e.target;
 
     // Card number validation
-    if (name === "so_the") {
+    if (name === "card_number") {
       if (!value) {
-        setCardNumberError("Card number is required");
+        setCardNumberError("Số thẻ là bắt buộc");
       } else if (!/^[A-Z0-9]{8,}$/.test(value)) {
         setCardNumberError(
-          "Card number must be at least 8 alphanumeric characters (uppercase)"
+          "Số thẻ phải có ít nhất 8 ký tự chữ và số (viết hoa)"
         );
       } else {
         setCardNumberError("");
@@ -114,21 +114,21 @@ export function UpdateMembershipCardModal({
     }
 
     // Date validation
-    if (name === "ngay_het_han" && formData.ngay_cap) {
+    if (name === "expiry_date" && formData.issue_date) {
       const expiryDate = new Date(value);
 
-      if (expiryDate <= formData.ngay_cap) {
-        setDateError("Expiry date must be after issue date");
+      if (expiryDate <= formData.issue_date) {
+        setDateError("Ngày hết hạn phải sau ngày cấp");
       } else {
         setDateError("");
       }
     }
 
-    if (name === "ngay_cap" && formData.ngay_het_han) {
+    if (name === "issue_date" && formData.expiry_date) {
       const issueDate = new Date(value);
 
-      if (formData.ngay_het_han <= issueDate) {
-        setDateError("Expiry date must be after issue date");
+      if (formData.expiry_date <= issueDate) {
+        setDateError("Ngày hết hạn phải sau ngày cấp");
       } else {
         setDateError("");
       }
@@ -137,11 +137,11 @@ export function UpdateMembershipCardModal({
     setFormData((prev) => ({
       ...prev,
       [name]:
-        name === "ngay_cap" || name === "ngay_het_han"
+        name === "issue_date" || name === "expiry_date"
           ? new Date(value)
-          : name === "diem_tich_luy"
+          : name === "points"
           ? parseInt(value, 10)
-          : name === "trangthai"
+          : name === "status"
           ? value === "true"
           : value,
     }));
@@ -160,17 +160,17 @@ export function UpdateMembershipCardModal({
       const updatedCard = await updateMembershipCardPoints(cardId, pointsToAdd);
       setFormData((prev) => ({
         ...prev,
-        diem_tich_luy: updatedCard.diem_tich_luy,
+        points: updatedCard.points,
       }));
       setPointsToAdd(0);
       toast.success(
-        `${Math.abs(pointsToAdd)} points ${
-          pointsToAdd > 0 ? "added to" : "subtracted from"
-        } card`
+        `${Math.abs(pointsToAdd)} điểm đã được ${
+          pointsToAdd > 0 ? "thêm vào" : "trừ từ"
+        } thẻ`
       );
     } catch (error) {
-      console.error("Error updating points:", error);
-      setError("Failed to update points. Please try again.");
+      console.error("Lỗi khi cập nhật điểm:", error);
+      setError("Cập nhật điểm thất bại. Vui lòng thử lại.");
     }
     setLoading(false);
   };
@@ -181,19 +181,17 @@ export function UpdateMembershipCardModal({
     // Validate required fields before submission
     let hasError = false;
 
-    if (formData.so_the && !/^[A-Z0-9]{8,}$/.test(formData.so_the)) {
-      setCardNumberError(
-        "Card number must be at least 8 alphanumeric characters (uppercase)"
-      );
+    if (formData.card_number && !/^[A-Z0-9]{8,}$/.test(formData.card_number)) {
+      setCardNumberError("Số thẻ phải có ít nhất 8 ký tự chữ và số (viết hoa)");
       hasError = true;
     }
 
     if (
-      formData.ngay_het_han &&
-      formData.ngay_cap &&
-      formData.ngay_het_han <= formData.ngay_cap
+      formData.expiry_date &&
+      formData.issue_date &&
+      formData.expiry_date <= formData.issue_date
     ) {
-      setDateError("Expiry date must be after issue date");
+      setDateError("Ngày hết hạn phải sau ngày cấp");
       hasError = true;
     }
 
@@ -202,7 +200,7 @@ export function UpdateMembershipCardModal({
     }
 
     if (!cardId) {
-      setError("Card ID is missing");
+      setError("Thiếu ID thẻ");
       return;
     }
 
@@ -214,10 +212,10 @@ export function UpdateMembershipCardModal({
       setLoading(false);
       onSuccess();
       onClose();
-      toast.success("Membership card updated successfully");
+      toast.success("Cập nhật thẻ thành viên thành công");
     } catch (error) {
-      console.error("Error updating membership card:", error);
-      setError("Failed to update membership card. Please try again.");
+      console.error("Lỗi khi cập nhật thẻ thành viên:", error);
+      setError("Cập nhật thẻ thành viên thất bại. Vui lòng thử lại.");
       setLoading(false);
     }
   };
@@ -227,31 +225,31 @@ export function UpdateMembershipCardModal({
       <DialogContent className="sm:max-w-[425px]">
         {fetchLoading ? (
           <div className="py-6 text-center">
-            Loading membership card data...
+            Đang tải dữ liệu thẻ thành viên...
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
             <DialogHeader>
-              <DialogTitle>Update Membership Card</DialogTitle>
+              <DialogTitle>Cập Nhật Thẻ Thành Viên</DialogTitle>
               <DialogDescription>
-                Update the details for this membership card. Click save when
-                you're done.
+                Cập nhật thông tin cho thẻ thành viên này. Nhấn lưu khi hoàn
+                tất.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="id_khachhang" className="text-right">
-                  Customer
+                <Label htmlFor="id_customer" className="text-right">
+                  Khách Hàng
                 </Label>
                 <select
-                  id="id_khachhang"
-                  name="id_khachhang"
-                  value={formData.id_khachhang}
+                  id="id_customer"
+                  name="id_customer"
+                  value={formData.id_customer}
                   onChange={handleChange}
                   className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   required
                 >
-                  <option value="">Select Customer</option>
+                  <option value="">Chọn Khách Hàng</option>
                   {customers.map((customer) => (
                     <option key={customer._id} value={customer._id}>
                       {customer.name} ({customer.email})
@@ -261,36 +259,38 @@ export function UpdateMembershipCardModal({
               </div>
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="so_the" className="text-right">
-                  Card Number
+                <Label htmlFor="card_number" className="text-right">
+                  Số Thẻ
                 </Label>
                 <div className="col-span-3 space-y-1">
                   <Input
-                    id="so_the"
-                    name="so_the"
-                    value={formData.so_the}
+                    id="card_number"
+                    name="card_number"
+                    value={formData.card_number}
                     onChange={handleChange}
                     className={cardNumberError ? "border-destructive" : ""}
-                    placeholder="e.g. CARD12345"
+                    placeholder="VD: CARD12345"
                     required
                   />
                   {cardNumberError && (
                     <p className="text-xs text-destructive">
-                      {cardNumberError}
+                      {cardNumberError === "Số thẻ là bắt buộc"
+                        ? "Số thẻ là bắt buộc"
+                        : "Số thẻ phải có ít nhất 8 ký tự chữ và số (viết hoa)"}
                     </p>
                   )}
                 </div>
               </div>
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="ngay_cap" className="text-right">
-                  Issue Date
+                <Label htmlFor="issue_date" className="text-right">
+                  Ngày Cấp
                 </Label>
                 <Input
-                  id="ngay_cap"
-                  name="ngay_cap"
+                  id="issue_date"
+                  name="issue_date"
                   type="date"
-                  value={formData.ngay_cap?.toISOString().split("T")[0] || ""}
+                  value={formData.issue_date?.toISOString().split("T")[0] || ""}
                   onChange={handleChange}
                   className="col-span-3"
                   required
@@ -298,35 +298,37 @@ export function UpdateMembershipCardModal({
               </div>
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="ngay_het_han" className="text-right">
-                  Expiry Date
+                <Label htmlFor="expiry_date" className="text-right">
+                  Ngày Hết Hạn
                 </Label>
                 <div className="col-span-3 space-y-1">
                   <Input
-                    id="ngay_het_han"
-                    name="ngay_het_han"
+                    id="expiry_date"
+                    name="expiry_date"
                     type="date"
                     value={
-                      formData.ngay_het_han?.toISOString().split("T")[0] || ""
+                      formData.expiry_date?.toISOString().split("T")[0] || ""
                     }
                     onChange={handleChange}
                     className={dateError ? "border-destructive" : ""}
                     required
                   />
                   {dateError && (
-                    <p className="text-xs text-destructive">{dateError}</p>
+                    <p className="text-xs text-destructive">
+                      {"Ngày hết hạn phải sau ngày cấp"}
+                    </p>
                   )}
                 </div>
               </div>
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="diem_tich_luy" className="text-right">
-                  Points
+                <Label htmlFor="points" className="text-right">
+                  Điểm
                 </Label>
                 <div className="col-span-3">
                   <div className="flex justify-between mb-2">
                     <span className="text-sm">
-                      Current: <strong>{formData.diem_tich_luy}</strong>
+                      Hiện tại: <strong>{formData.points}</strong>
                     </span>
                   </div>
                   <div className="flex gap-2">
@@ -334,7 +336,7 @@ export function UpdateMembershipCardModal({
                       type="number"
                       value={pointsToAdd}
                       onChange={handlePointsChange}
-                      placeholder="Points to add/subtract"
+                      placeholder="Điểm thêm/trừ"
                       className="w-full"
                     />
                     <Button
@@ -343,28 +345,28 @@ export function UpdateMembershipCardModal({
                       disabled={loading || pointsToAdd === 0}
                       size="sm"
                     >
-                      {pointsToAdd >= 0 ? "Add" : "Subtract"}
+                      {pointsToAdd >= 0 ? "Thêm" : "Trừ"}
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    (Enter negative value to subtract points)
+                    (Nhập giá trị âm để trừ điểm)
                   </p>
                 </div>
               </div>
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="trangthai" className="text-right">
-                  Status
+                <Label htmlFor="status" className="text-right">
+                  Trạng Thái
                 </Label>
                 <select
-                  id="trangthai"
-                  name="trangthai"
-                  value={formData.trangthai?.toString()}
+                  id="status"
+                  name="status"
+                  value={formData.status?.toString()}
                   onChange={handleChange}
                   className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  <option value="true">Active</option>
-                  <option value="false">Inactive</option>
+                  <option value="true">Hoạt Động</option>
+                  <option value="false">Không Hoạt Động</option>
                 </select>
               </div>
             </div>
@@ -373,13 +375,13 @@ export function UpdateMembershipCardModal({
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose}>
-                Cancel
+                Hủy
               </Button>
               <Button
                 type="submit"
                 disabled={loading || !!cardNumberError || !!dateError}
               >
-                {loading ? "Saving..." : "Save changes"}
+                {loading ? "Đang Lưu..." : "Lưu Thay Đổi"}
               </Button>
             </DialogFooter>
           </form>
